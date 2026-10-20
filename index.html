@@ -16,25 +16,29 @@
 @font-face { font-family: Manrope; src: url(assets/manrope.woff2) format('woff2'); font-weight: 200 800; font-display: swap; }
 :root {
   --ground: #F4F5F1; --surface: #FFFFFF; --ink: #222823; --muted: #5F6860; --line: #E3E6E0;
+  --wall-a: #DCE7DF; --wall-b: #EFE9DC; --bezel: #1E2320;
   --accent: #3F6B54; --accent-soft: #DCE7DF; --accent-ink: #FFFFFF; --warm: #F6EBD3; --warm-ink: #8A5A12;
   --shadow: 0 24px 60px rgba(34, 40, 35, .14);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --ground: #1B201C; --surface: #242A25; --ink: #EEF1EC; --muted: #A5AEA6; --line: #333B34;
-    --accent: #8FC2A3; --accent-soft: #2C3A30; --accent-ink: #14201A; --warm: #3A3122; --warm-ink: #E9C98A;
+    --ground: #2A302B; --surface: #353C37; --ink: #E5EAE5; --muted: #9AA59C; --line: #444D46;
+    --wall-a: #31473A; --wall-b: #3F3A31; --bezel: #0E110F;
+    --accent: #93BFA5; --accent-soft: #24362B; --accent-ink: #0F1311; --warm: #3A3020; --warm-ink: #E0B464;
     --shadow: 0 24px 60px rgba(0, 0, 0, .45);
   }
 }
 * { box-sizing: border-box; margin: 0; }
 html { scroll-behavior: smooth; }
+body::before { content: ""; position: fixed; inset: -60px; z-index: -1; pointer-events: none; filter: blur(40px);
+  background: radial-gradient(80% 35% at 50% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%), linear-gradient(180deg, var(--wall-a), var(--ground) 45%, var(--wall-b)); }
 body { background: var(--ground); color: var(--ink); font: 17px/1.6 Manrope, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: var(--accent); }
 img { max-width: 100%; height: auto; display: block; }
 .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
 
 /* Header */
-header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 86%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; }
+header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 55%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; }
 header .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--ink); text-decoration: none; letter-spacing: -.3px; }
 .brand img { width: 34px; height: 34px; border-radius: 9px; }
@@ -50,24 +54,30 @@ nav a:hover { color: var(--ink); }
 .cta-small { background: var(--accent-soft); color: var(--accent) !important; padding: 8px 14px; border-radius: 999px; }
 
 /* Hero */
-.hero { padding: 56px 0 40px; background: radial-gradient(1200px 520px at 80% 0%, var(--accent-soft), transparent 70%); }
+.hero { padding: 56px 0 40px; }
 .hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
 .eyebrow { display: inline-block; font-size: 14px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; margin-bottom: 20px; }
 h1 { font-size: clamp(40px, 6vw, 64px); line-height: 1.04; letter-spacing: -2px; font-weight: 800; }
 .lead { font-size: clamp(18px, 2.2vw, 21px); color: var(--muted); margin: 22px 0 30px; max-width: 520px; }
 .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
 .note { font-size: 14px; color: var(--muted); margin-top: 16px; }
-.phone { width: 300px; margin: 0 auto; border-radius: 44px; border: 10px solid #1d221e; overflow: hidden; box-shadow: var(--shadow); background: #1d221e; }
-.phone img { border-radius: 34px; }
+.phone { --w: 290px; width: var(--w); aspect-ratio: 393 / 852; margin: 0 auto; position: relative; flex: none;
+  padding: calc(var(--w) * .032); border-radius: calc(var(--w) * .165); background: var(--bezel);
+  box-shadow: inset 0 0 0 1.5px #4a514c, inset 0 0 0 3px #111, var(--shadow); width: var(--w); }
+.phone::before { content: ""; position: absolute; top: calc(var(--w) * .062); left: 50%; width: calc(var(--w) * .034); height: calc(var(--w) * .034); transform: translateX(-50%); border-radius: 50%; background: #050605; box-shadow: 0 0 0 1.5px #1a1d1b; z-index: 2; }
+.phone::after { content: ""; position: absolute; right: -3px; top: 24%; width: 3px; height: 9%; border-radius: 0 2px 2px 0; background: var(--bezel); box-shadow: 0 calc(var(--w) * .2) 0 var(--bezel); }
+.phone picture { display: contents; }
+.phone img { width: 100%; height: 100%; object-fit: cover; border-radius: calc(var(--w) * .135); }
 .hero .phones { position: relative; }
-.hero .phone.back { position: absolute; width: 240px; right: -10px; top: 60px; transform: rotate(6deg); opacity: .95; z-index: 0; }
-.hero .phone.front { position: relative; z-index: 1; transform: rotate(-3deg); margin-left: 10px; }
+.hero .phones { display: flex; justify-content: center; align-items: flex-end; }
+.hero .phone.back { --w: 240px; margin: 0 -40px 40px 0; z-index: 0; order: 2; }
+.hero .phone.front { --w: 290px; z-index: 1; margin: 0; }
 @media (max-width: 860px) {
   .hero .wrap { grid-template-columns: 1fr; text-align: center; }
   .lead { margin-left: auto; margin-right: auto; }
   .ctas { justify-content: center; }
   .hero .phone.back { display: none; }
-  .hero .phone.front { transform: none; margin: 8px auto 0; width: 260px; }
+  .hero .phone.front { --w: 260px; margin: 8px auto 0; }
 }
 
 /* Sections */
@@ -88,12 +98,12 @@ h2 { font-size: clamp(30px, 4vw, 42px); letter-spacing: -1px; line-height: 1.1; 
 .feature ul { list-style: none; padding: 0; margin-top: 20px; }
 .feature li { padding-left: 32px; position: relative; margin: 10px 0; color: var(--muted); }
 .feature li::before { content: ""; position: absolute; left: 0; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%233F6B54' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5'/%3E%3C/svg%3E") center/14px no-repeat; }
-.feature .phone { width: 280px; }
+.feature .phone { --w: 270px; }
 @media (max-width: 820px) {
   .feature { grid-template-columns: 1fr; gap: 32px; text-align: center; }
   .feature.flip .copy { order: 0; }
   .feature ul { display: inline-block; text-align: left; }
-  .feature .phone { width: 250px; }
+  .feature .phone { --w: 250px; }
 }
 
 .extras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 36px; }
@@ -147,18 +157,18 @@ footer a { color: var(--muted); }
   <section class="hero">
     <div class="wrap">
       <div>
-        <span class="eyebrow">Medication reminder for Android</span>
+        <span class="eyebrow">Medication reminder for iPhone and Android</span>
         <h1>Pill reminders that don't give up.</h1>
         <p class="lead">Most reminders ping once and disappear. Nudge keeps gently nudging you until you tap <strong>Taken</strong>, so you never have to wonder whether you've had your pills today.</p>
         <div class="ctas" id="get">
-          <a class="btn primary" href="#notify"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.6 2.3a1.4 1.4 0 0 0-.6 1.2v17a1.4 1.4 0 0 0 .6 1.2l9.3-9.7zM15.3 13.4l2.7 2.8-11 6.3 8.3-9.1zm3.8-4.4 2.4 1.4c.9.5.9 1.8 0 2.3l-2.5 1.4-3-3.1zM7 1.5l11 6.3-2.7 2.8z"/></svg>Coming soon to Google Play</a>
-          <a class="btn ghost" href="#features">See how it works</a>
+          <a class="btn primary" href="#notify"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7a4.5 4.5 0 0 0-3.6-1.9c-1.5-.2-3 .9-3.7.9-.8 0-2-.9-3.2-.9a4.8 4.8 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7 4.2 4.2 0 0 1-2.3-3.9zM14 5.5A4.3 4.3 0 0 0 15 2.4a4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3 3.6 3.6 0 0 0 2.9-1.4z"/></svg>App Store</a>
+          <a class="btn primary" href="#notify"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.6 2.3a1.4 1.4 0 0 0-.6 1.2v17a1.4 1.4 0 0 0 .6 1.2l9.3-9.7zM15.3 13.4l2.7 2.8-11 6.3 8.3-9.1zm3.8-4.4 2.4 1.4c.9.5.9 1.8 0 2.3l-2.5 1.4-3-3.1zM7 1.5l11 6.3-2.7 2.8z"/></svg>Google Play</a>
         </div>
-        <p class="note">Free. No account. No ads.</p>
+        <p class="note">Coming soon to iPhone and Android. Free, no account, no ads.</p>
       </div>
       <div class="phones">
-        <div class="phone back"><img src="assets/progress.webp" alt="Nudge progress screen showing a score of 98 and an 8 day streak" width="720" height="1280"></div>
-        <div class="phone front"><img src="assets/today.webp" alt="Nudge today screen with a reminder for lunch pills and buttons for I've taken them, 30 min and More" width="720" height="1280"></div>
+        <div class="phone back"><img src="assets/progress.webp" alt="Nudge progress screen showing a score of 98 and an 8 day streak" width="786" height="1704"></div>
+        <div class="phone front"><picture><source srcset="assets/today-dark.webp" media="(prefers-color-scheme: dark)"><img src="assets/today.webp" alt="Nudge today screen with a reminder for lunch pills and buttons for I've taken them, 30 min and More" width="786" height="1704"></picture></div>
       </div>
     </div>
   </section>
@@ -188,7 +198,7 @@ footer a { color: var(--muted); }
             <li>"Not tracking today" for days off, without breaking your streak</li>
           </ul>
         </div>
-        <div class="phone"><img src="assets/dose-sheet.webp" alt="Dose options: took some, snooze 1 hour, skip this dose, not tracking today" width="720" height="1280"></div>
+        <div class="phone"><img src="assets/dose-sheet.webp" alt="Dose options: took some, snooze 1 hour, skip this dose, not tracking today" width="786" height="1704"></div>
       </div>
 
       <div class="feature flip">
@@ -202,7 +212,7 @@ footer a { color: var(--muted); }
             <li>A weekly checklist right on the Today screen</li>
           </ul>
         </div>
-        <div class="phone"><img src="assets/progress.webp" alt="Progress screen with score, doses taken, streak and calendar" width="720" height="1280"></div>
+        <div class="phone"><img src="assets/progress.webp" alt="Progress screen with score, doses taken, streak and calendar" width="786" height="1704"></div>
       </div>
 
       <div class="feature">
@@ -215,12 +225,12 @@ footer a { color: var(--muted); }
             <li>One tap to log a refill</li>
           </ul>
         </div>
-        <div class="phone"><img src="assets/meds.webp" alt="Medications list with stock levels and a low stock warning" width="720" height="1280"></div>
+        <div class="phone"><img src="assets/meds.webp" alt="Medications list with stock levels and a low stock warning" width="786" height="1704"></div>
       </div>
 
       <div class="extras">
-        <div class="extra"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="18" height="8" rx="2"/></svg></div><h3>Home-screen widget</h3><p>See what's due and log it without opening the app.</p></div>
-        <div class="extra"><div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></div><h3>Quick settings tile</h3><p>Mark your pills as taken from the notification shade.</p></div>
+        <div class="extra"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4zM8 20h8M12 16v4"/></svg></div><h3>iPhone and Android</h3><p>The same calm design and the same reminders on both.</p></div>
+        <div class="extra"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="18" height="8" rx="2"/></svg></div><h3>Widget and tile</h3><p>On Android, log doses from your home screen or quick settings.</p></div>
         <div class="extra"><div class="ic"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div><h3>Dark mode</h3><p>Easy on the eyes for late-night doses.</p></div>
         <div class="extra"><div class="ic"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><h3>Report for your GP</h3><p>Share your medication list and recent doses as a spreadsheet.</p></div>
       </div>
@@ -250,10 +260,10 @@ footer a { color: var(--muted); }
       <h2>Questions</h2>
       <div class="faq" style="text-align:left">
         <details><summary>Is Nudge free?</summary><p>Yes. There are no ads, no subscription and no in-app purchases.</p></details>
-        <details><summary>Will it work if my phone restarts or is on silent?</summary><p>Yes. Reminders are scheduled on your phone and come back after a restart. For the most reliable timing on Android 14 and later, allow "Alarms &amp; reminders" when Nudge asks.</p></details>
+        <details><summary>Will it work if my phone restarts or is on silent?</summary><p>Yes. Reminders are scheduled on your phone and come back after a restart. On Android 14 and later, allow "Alarms &amp; reminders" when Nudge asks for the most reliable timing.</p></details>
         <details><summary>What happens if I take only some of my pills?</summary><p>Tap More, then Took some, and tick the ones you took. Nudge logs a partial dose and adjusts your stock to match.</p></details>
         <details><summary>Where is my data stored?</summary><p>Only on your phone. Nudge has no servers and no accounts. You can export a backup file at any time from Settings.</p></details>
-        <details><summary>Is there an iPhone version?</summary><p>An iPhone version is in testing. Android comes first.</p></details>
+        <details><summary>Is Nudge on iPhone and Android?</summary><p>Yes, both. Nudge is coming to the App Store and Google Play. The home-screen widget and quick settings tile are Android-only for now.</p></details>
         <details><summary>Does Nudge give medical advice?</summary><p>No. Nudge helps you remember your medication. Always follow the advice of your GP or pharmacist.</p></details>
       </div>
     </div>
@@ -263,7 +273,7 @@ footer a { color: var(--muted); }
     <div class="wrap">
       <img src="assets/icon.png" alt="">
       <h2>Never wonder "did I take them?" again.</h2>
-      <p class="sub" style="margin:12px auto 0">Nudge is coming soon to Google Play. Want to know when it's out?</p>
+      <p class="sub" style="margin:12px auto 0">Nudge is coming soon to the App Store and Google Play. Want to know when it's out?</p>
       <div class="ctas">
         <a class="btn primary" href="mailto:nudge@pratas.co?subject=Tell%20me%20when%20Nudge%20launches">Email me at launch</a>
       </div>
